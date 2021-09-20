@@ -62,8 +62,12 @@ def download_data(num_file=None):
                             total=int(response.headers.get('content-length', 0))) as fout:
                 for chunk in response.iter_content(chunk_size=4096):
                     fout.write(chunk)
+        
         current_md5 = md5(save_path + filename)
-        # assert current_md5 == MD5[filename], "MD5 mismatched, file corrupted"
+        if current_md5 == MD5[filename]:
+            print("MD5 matched")
+        else:
+            print(f"{filename} MD5 mismatched, file corrupted")
             
         print(f"Extracting {filename} to {save_path + filename}")
         with zipfile.ZipFile(save_path + filename, 'r') as zip_ref:
