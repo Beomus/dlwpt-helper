@@ -1,6 +1,7 @@
 import hashlib
 import os
 import requests
+import subprocess
 from tqdm import tqdm
 import zipfile
 
@@ -52,6 +53,7 @@ def download_data(num_file=None):
         link = f"https://zenodo.org/record/{id}/files/"
         url = link + f"subset{i}.zip"
         response = requests.get(url + "?download=1", stream=True)
+
         filename = url.split("/")[-1]
 
         if os.path.isfile(save_path + filename):
@@ -62,19 +64,23 @@ def download_data(num_file=None):
                             total=int(response.headers.get('content-length', 0))) as fout:
                 for chunk in response.iter_content(chunk_size=4096):
                     fout.write(chunk)
-        
-        current_md5 = md5(save_path + filename)
-        if current_md5 == MD5[filename]:
-            print("MD5 matched")
-        else:
-            print(f"{filename} MD5 mismatched, file corrupted")
+
+        cmd = f"!7z x data-unversion/part2/luna/subset{i}.zip -o./data-unversion/part2/luna/"
+        subprocess.run(cmd)
+        subprocess.run(f"rm data-unversion/part2/luna/subset{i}.zip")
+
+        # current_md5 = md5(save_path + filename)
+        # if current_md5 == MD5[filename]:
+        #     print("MD5 matched")
+        # else:
+        #     print(f"{filename} MD5 mismatched, file corrupted")
             
-        print(f"Extracting {filename} to {save_path + filename}")
-        with zipfile.ZipFile(save_path + filename, 'r') as zip_ref:
-            zip_ref.extractall(save_path + filename)
+        # print(f"Extracting {filename} to {save_path + filename}")
+        # with zipfile.ZipFile(save_path + filename, 'r') as zip_ref:
+        #     zip_ref.extractall(save_path + filename)
         
-        print(f"Removing {filename}")
-        os.remove(save_path + filename)
+        # print(f"Removing {filename}")
+        # os.remove(save_path + filename)
 
 
 if __name__ == "__main__":
