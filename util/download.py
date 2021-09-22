@@ -65,7 +65,7 @@ def download_data(num_file=None):
                 for chunk in response.iter_content(chunk_size=4096):
                     fout.write(chunk)
 
-        cmd = f"!7z x data-unversion/part2/luna/subset{i}.zip -o./data-unversion/part2/luna/"
+        cmd = f"!7z x /content/data-unversion/part2/luna/subset{i}.zip -o./content/data-unversion/part2/luna/"
         subprocess.run(cmd)
         subprocess.run(f"rm data-unversion/part2/luna/subset{i}.zip")
 
