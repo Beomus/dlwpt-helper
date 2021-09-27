@@ -1,10 +1,12 @@
 import hashlib
+from functools import lru_cache
 import os
 import requests
 import subprocess
 from tqdm import tqdm
 import zipfile
 
+subset0.zip
 
 MD5 = {
     "subset0.zip": "1065b0f42b8c25cf29260fd924a3c3a2",
@@ -19,6 +21,7 @@ MD5 = {
     "subset9.zip": "e55c473bbeebd712eb2224a58998be8e",
 }
 
+@lru_cache
 def md5(fname):
     hash_md5 = hashlib.md5()
     with open(fname, "rb") as f:
@@ -49,10 +52,9 @@ def download_data(num_file=None):
     save_path = 'data-unversion/part2/luna/'
 
     for i in num_file:
-        id = 3723295 if i <= 6 else 4121926
-        link = f"https://zenodo.org/record/{id}/files/"
+        link = "http://tpsc.bassett.io/"
         url = link + f"subset{i}.zip"
-        response = requests.get(url + "?download=1", stream=True)
+        response = requests.get(url, stream=True)
 
         filename = url.split("/")[-1]
 
@@ -65,22 +67,18 @@ def download_data(num_file=None):
                 for chunk in response.iter_content(chunk_size=4096):
                     fout.write(chunk)
 
-        cmd = f"!7z x /content/data-unversion/part2/luna/subset{i}.zip -o./content/data-unversion/part2/luna/"
-        subprocess.run(cmd)
-        subprocess.run(f"rm data-unversion/part2/luna/subset{i}.zip")
-
-        # current_md5 = md5(save_path + filename)
-        # if current_md5 == MD5[filename]:
-        #     print("MD5 matched")
-        # else:
-        #     print(f"{filename} MD5 mismatched, file corrupted")
+        current_md5 = md5(save_path + filename)
+        if current_md5 == MD5[filename]:
+            print("MD5 matched")
+        else:
+            print(f"{filename} MD5 mismatched, file corrupted")
             
-        # print(f"Extracting {filename} to {save_path + filename}")
-        # with zipfile.ZipFile(save_path + filename, 'r') as zip_ref:
-        #     zip_ref.extractall(save_path + filename)
+        print(f"Extracting {filename} to {save_path + filename}")
+        with zipfile.ZipFile(save_path + filename, 'r') as zip_ref:
+            zip_ref.extractall(save_path + filename)
         
-        # print(f"Removing {filename}")
-        # os.remove(save_path + filename)
+        print(f"Removing {filename}")
+        os.remove(save_path + filename)
 
 
 if __name__ == "__main__":
