@@ -1,12 +1,10 @@
 import hashlib
-from functools import lru_cache
 import os
 import requests
 import subprocess
 from tqdm import tqdm
 import zipfile
 
-subset0.zip
 
 MD5 = {
     "subset0.zip": "1065b0f42b8c25cf29260fd924a3c3a2",
@@ -21,7 +19,6 @@ MD5 = {
     "subset9.zip": "e55c473bbeebd712eb2224a58998be8e",
 }
 
-@lru_cache
 def md5(fname):
     hash_md5 = hashlib.md5()
     with open(fname, "rb") as f:
