@@ -27,3 +27,4 @@ tqdm
 
 # future is here due to a missing dep in caffe2
 # future
+jupyter-server>=2.11.2 # not directly required, pinned by Snyk to avoid a vulnerability
